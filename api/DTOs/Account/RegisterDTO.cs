@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 
-namespace api.DTOs
+namespace api.DTOs.Account
 {
     public class RegisterDTO
     {
