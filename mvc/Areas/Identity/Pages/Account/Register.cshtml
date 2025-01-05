@@ -11,7 +11,6 @@
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Create a new account.</h2>
             <hr />
-            <div id="alertContainer"></div>
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
@@ -54,13 +53,11 @@
                 //Send Login request to Web API
                 $.ajax({
                     url: 'https://localhost:7007/api/account/register',
-                    method: 'Post',
+                    method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({username,email,password}),
                     success: function(response) {
-                            $('#alertContainer').html(
-                            '<div class="alert alert-success" role="alert">Registration Successful</div>'
-                        );
+                        alert("Registration Successful");
                         window.location.href ='/Identity/Account/Login'; //Redirect to Login page
                     },
                     error : function(){

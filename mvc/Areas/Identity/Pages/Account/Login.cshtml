@@ -49,23 +49,23 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" /> 
     <script>
         $(document).ready(function(){
             $('#loginForm').submit(function(e){
-                e.preventDefult();
+                e.preventDefault();
 
                 const username = $('#Input_Username').val();
                 const password = $('#Input_Password').val();
 
                 $.ajax({
                     url: 'https://localhost:7007/api/account/login',
-                    method: 'Post',
+                    method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({username,password}),
                     success: function(response) {
                         localStorage.setItem('token',response.token);
-                        console.log('Login Successful');
+                        alert("Login Successful");
                         // window.location.href ='/'; //Redirect to Root page
                     },
                     error : function(){
