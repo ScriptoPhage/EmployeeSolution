@@ -28,7 +28,7 @@ namespace api.Controllers
         public IActionResult GetEmployees()
         {
             // Join operation
-            var employees = _context.EmployeeInfos.Include(e => e.Department).Include(e => e.Designation).ToList().Select(s => s.ToEmployeeDTO());
+            var employees = _context.EmployeeInfos.Include(e => e.Department).Include(e => e.Designation).ToList().Select(s => s.ToEmployeeDetailedDTO());
             return Ok(employees);
         }
         // GET: api/EmployeeInfoes/5

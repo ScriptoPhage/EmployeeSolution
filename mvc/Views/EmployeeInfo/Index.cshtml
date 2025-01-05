@@ -1,0 +1,66 @@
+﻿@model IEnumerable<mvc.Models.EmployeeInfo>
+
+@{
+    ViewData["Title"] = "EmployeeListView";
+}
+
+<h1>EmployeeListView</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="employeeList" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+<tbody></tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: 'https://localhost:7007/api/EmployeeInfoes',
+                method: 'GET',
+                success: function(response){
+                    const tbody = $("#employeeList tbody");
+                    tbody.empty();
+                    response.forEach(employee => { 
+                        //Backtick starts
+                        const row = ` 
+                                <tr>
+                                    <td>${employee.id}</td>
+                                    <td>${employee.name}</td>
+                                    <td>${employee.department?.name || 'N/A'}</td>
+                                    <td>${employee.designation?.title || 'N/A'}</td>
+                                    <td> 
+                                      @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | 
+                                      @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) 
+                                    </td> 
+                                </tr>
+                        `;    //Backtick ends                      
+                        tbody.append(row);
+                    });
+                    
+                },
+                error: function(error){
+                console.error('Error fetching data:',error);
+                }
+            });
+        });
+    </script>
+}

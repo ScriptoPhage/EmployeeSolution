@@ -66,7 +66,7 @@
                     success: function(response) {
                         localStorage.setItem('token',response.token);
                         alert("Login Successful");
-                        // window.location.href ='/'; //Redirect to Root page
+                        window.location.href ='/EmployeeInfo/Index'; //Redirect to Root page
                     },
                     error : function(){
                         alert("Login failed! Please try again.");

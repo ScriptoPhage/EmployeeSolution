@@ -1,0 +1,114 @@
+﻿@model mvc.Models.EmployeeInfo
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>EmployeeInfo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="EmployeeCreateForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="employeeName"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Department" class="control-label"></label>
+                <select asp-for="Department" class="form-select" id="departmentDropdown">
+                    <option value="">Select a Department</option>  <!-- Initial option -->
+                </select>
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Designation" class="control-label"></label>
+                <select asp-for="Designation" class="form-select" id="designationDropdown">
+                    <option value="">Select a Designation</option>  <!-- Initial option -->
+                </select>
+                <span asp-validation-for="Designation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function(){
+            loadDepartments();
+            loadDesignations();
+            $('#EmployeeCreateForm').submit(function(e)  {
+                e.preventDefault();
+                const name = $('#employeeName').val();
+                const departmentId = $('#departmentDropdown').val();
+                const designationId = $('#designationDropdown').val();
+
+                if(!name || !departmentId || !designationId){
+                    alert("Please fill all fields!");
+                    return;
+                }
+
+                $.ajax({
+                    url: 'https://localhost:7007/api/EmployeeInfoes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({name,departmentId,designationId}),
+                    success:function(){
+                        alert("New employee successfully created!");
+                        window.location.href = '/EmployeeInfo/Index';
+                    },
+                    error:function(){
+                        alert("Employee creation failed");
+                    }
+                });
+
+            });
+
+            function loadDepartments(){
+                $.ajax({
+                url:'https://localhost:7007/api/DepartmentInfoes',
+                method: 'GET',
+                success: function(data){
+                        var departmentDropdown = $('#departmentDropdown');
+                        departmentDropdown.empty();
+                        data.forEach(function(dept) {
+                            departmentDropdown.append('<option value="' + dept.id + '">' + dept.name + '</option>');
+                    });
+                },
+                error:function(){
+                        alert("Failed to load departments!");
+                    }
+                });
+            }
+            
+            function loadDesignations(){
+                $.ajax({
+                url:'https://localhost:7007/api/DesignationInfoes',
+                method: 'GET',
+                success: function(data){
+                         var designationDropdown = $('#designationDropdown');
+                         designationDropdown.empty();
+                         data.forEach(function(desig){
+                             designationDropdown.append('<option value="'+ desig.id + '">' + desig.title + '</option>');
+                         });
+                },
+                error: function(){
+                            alert("Failed to load designations!");
+                     }
+
+                });
+            }
+        });
+    </script>
+}
