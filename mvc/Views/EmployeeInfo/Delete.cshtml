@@ -1,0 +1,71 @@
+﻿@model mvc.Models.EmployeeInfo
+
+@{
+    ViewData["Title"] = "Delete";
+    var employeeID = ViewContext.RouteData.Values["id"];
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>EmployeeInfo</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10" id="EmployeeID">@employeeID</dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10" id="EmployeeName">
+            @* @Html.DisplayFor(model => model.Name) *@
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete" id="DeleteForm">
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+                var employeeId = @employeeID;
+                loadEmployeeName();
+                $('#DeleteForm').submit(function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: `https://localhost:7007/api/EmployeeInfoes/${employeeId}`,
+                        method: 'DELETE',
+                        success: function(response){
+                            alert(`Deleted employee ${employeeId} successfully`);
+                            window.location.href = '/EmployeeInfo/Index';
+                        },
+                        error : function(error) {
+                            alert(`Deletion of Employee ${employeeId} failed!`);
+                            window.location.href = '/EmployeeInfo/Index';
+                        }
+                    });
+                });
+
+                function loadEmployeeName(){
+                    var employeeId = @employeeID;
+                    console.log("Employee id is: ",employeeId);
+                    $.ajax({
+                        url: `https://localhost:7007/api/EmployeeInfoes/${employeeId}`,
+                        method: 'GET',
+                        success : function(response){
+                            console.log(response.name);
+                            document.getElementById('EmployeeName').innerText = response.name;
+                        },
+                        error : function(error) {
+                            console.error('Error fetching data:',error);
+                        }
+                    });
+                }
+        });
+    </script>
+
+}

@@ -42,16 +42,16 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            return Ok(employee.ToEmployeeDTO());
+            return Ok(employee.ToEmployeeDetailedDTO());
         }
 
         // PUT: api/EmployeeInfoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
         [HttpPut("{id}")]
-        public IActionResult UpdateEmployee([FromRoute] int id, [FromBody] UpdateEmployeeDTO employeeDTO)
+        public async Task<IActionResult> UpdateEmployee([FromRoute] int id, [FromBody] UpdateEmployeeDTO employeeDTO)
         {
-            var employeeModel = _context.EmployeeInfos.FirstOrDefault(e => e.Id == id);
+            var employeeModel = await _context.EmployeeInfos.Include(e => e.Department).Include(e => e.Designation).FirstOrDefaultAsync(e => e.Id == id);
             if (employeeModel == null)
             {
                 return NotFound();
@@ -61,8 +61,19 @@ namespace api.Controllers
             employeeModel.DepartmentId = (int) employeeDTO.DepartmentId;
             employeeModel.DesignationId = (int) employeeDTO.DesignationId;
 
-            _context.SaveChanges();
-
+            await _context.SaveChangesAsync();
+            
+            //The following employeeModel line is not necessary. I added it for an optional reason. Previously when PUT
+            //was executed, if DepartmentID or DesignationID were updated, the returned EmployeeDTO had the updated
+            //fields as "Unknown". If both were updated, then both would show unknown. Name on the otherhand would not
+            //show unknown, rather the updated value would show. In all cases, the database updates properly. However,
+            //after doing a put request where I changed any of DepartmentID or DesignationID, if I resend the same request
+            //without changing, then all fields show. Suppose in a specific put request to id 2, Name is Abir, DeptID I gave
+            //2, DesignationID 3, then the response EmployeeDTO would have Abir as name, but DeptID and DesignationID would be
+            //unknown. However, if I sent this same request again, all fields would show. This is because EF Core does not automatically
+            //refresh the Navigation properties in the tracked entity (i.e. employeeModel). So after saving changes, I loaded
+            //employeeModel again, so that the returned employeeDTO shows deptname and designame.
+            employeeModel = await _context.EmployeeInfos.Include(e => e.Department).Include(e => e.Designation).FirstOrDefaultAsync(e => e.Id == id);
             return Ok(employeeModel.ToEmployeeDTO());
         }
 
@@ -78,7 +89,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            if (employeeDTO.Name != null)
+            if (employeeDTO.Name != null && employeeDTO.Name != "")
             {
                 employeeModel.Name = employeeDTO.Name;
             }
@@ -96,7 +107,7 @@ namespace api.Controllers
                 var desig = _context.Departments.Find(employeeDTO.DesignationId.Value);
                 if (desig != null)
                 {
-                    employeeModel.DepartmentId = desig.Id;
+                    employeeModel.DesignationId = desig.Id;
                 }
             }
 
@@ -132,7 +143,7 @@ namespace api.Controllers
             }
 
             _context.EmployeeInfos.Remove(employeeInfo);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return NoContent();
         }

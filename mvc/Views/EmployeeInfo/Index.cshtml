@@ -47,9 +47,9 @@
                                     <td>${employee.name}</td>
                                     <td>${employee.department?.name || 'N/A'}</td>
                                     <td>${employee.designation?.title || 'N/A'}</td>
-                                    <td> 
-                                      @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | 
-                                      @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) 
+                                    <td>
+                                        <a href="/EmployeeInfo/Edit/${employee.id}">Edit</a> |
+                                        <a href="/EmployeeInfo/Delete/${employee.id}">Delete</a>
                                     </td> 
                                 </tr>
                         `;    //Backtick ends                      

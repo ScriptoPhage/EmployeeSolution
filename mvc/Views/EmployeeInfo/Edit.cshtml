@@ -1,0 +1,132 @@
+﻿@model mvc.Models.EmployeeInfo
+
+@{
+    ViewData["Title"] = "Edit";
+    var employeeID = ViewContext.RouteData.Values["id"];
+}
+
+<h1>Edit</h1>
+
+<h4>EmployeeInfo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" id="EmployeeEditForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="employeeName" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Department" class="control-label"></label>
+                <select asp-for="Department" class="form-select" id="departmentDropdown">
+                    <option value="">Select a Department</option>  <!-- Initial option -->
+                </select>
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Designation" class="control-label"></label>
+                <select asp-for="Designation" class="form-select" id="designationDropdown">
+                    <option value="">Select a Designation</option>  <!-- Initial option -->
+                </select>
+                <span asp-validation-for="Designation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function(){
+            loadDepartments();
+            loadDesignations();
+            loadEmployee();
+            $('#EmployeeEditForm').submit(function(e)  {
+                e.preventDefault();
+                var employeeId = @employeeID;
+                const name = $('#employeeName').val();
+                const departmentId = $('#departmentDropdown').val();
+                const designationId = $('#designationDropdown').val();
+
+                $.ajax({
+                    url: `https://localhost:7007/api/EmployeeInfoes/${employeeId}`,
+                    method: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify({name,departmentId,designationId}),
+                    success:function(){
+                        alert(`Employee ${employeeId} successfully updated!`);
+                        window.location.href = '/EmployeeInfo/Index';
+                    },
+                    error:function(){
+                        alert(`Update of Employee ${employeeId} failed!`);
+                    }
+                });
+
+            });
+
+            function loadEmployee(){
+                var employeeId = @employeeID;
+                console.log("Employee id is: ",employeeId);
+                $.ajax({
+                    url: `https://localhost:7007/api/EmployeeInfoes/${employeeId}`,
+                    method: 'GET',
+                    success : function(response){
+                        var employeeField = $('#employeeName');
+                        var departmentDropdown = $('#departmentDropdown');
+                        var designationDropdown = $('#designationDropdown');
+                        employeeField.val(response.name);
+                        departmentDropdown.val(response.department.id);
+                        designationDropdown.val(response.designation.id);
+                    },
+                    error : function(error) {
+                        console.error('Error fetching data:',error);
+                    }
+                });
+            }
+
+            function loadDepartments(){
+                $.ajax({
+                url:'https://localhost:7007/api/DepartmentInfoes',
+                method: 'GET',
+                success: function(data){
+                        var departmentDropdown = $('#departmentDropdown');
+                        departmentDropdown.empty();
+                        data.forEach(function(dept) {
+                            departmentDropdown.append('<option value="' + dept.id + '">' + dept.name + '</option>');
+                    });
+                },
+                error:function(){
+                        alert("Failed to load departments!");
+                    }
+                });
+            }
+
+            function loadDesignations(){
+                $.ajax({
+                url:'https://localhost:7007/api/DesignationInfoes',
+                method: 'GET',
+                success: function(data){
+                         var designationDropdown = $('#designationDropdown');
+                         designationDropdown.empty();
+                         data.forEach(function(desig){
+                             designationDropdown.append('<option value="'+ desig.id + '">' + desig.title + '</option>');
+                         });
+                },
+                error: function(){
+                            alert("Failed to load designations!");
+                     }
+
+                });
+            }
+        });
+    </script>
+}
