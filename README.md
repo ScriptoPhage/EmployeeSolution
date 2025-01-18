@@ -1,7 +1,7 @@
 # Simple Employee Info CRUD App
 
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET-Core%208-blue) 
-![License](https://img.shields.io/badge/license-MIT-green)
+
 
 A simple CRUD application for managing employee information, built with **ASP.NET Core 8**.
 
