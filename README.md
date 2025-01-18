@@ -1,17 +1,25 @@
-Frontend
+# Simple Employee Info CRUD App
 
-    Developed using ASP.NET MVC.
-    CRUD operations are handled seamlessly via AJAX requests for a smooth user experience.
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET-Core%208-blue) 
+![License](https://img.shields.io/badge/license-MIT-green)
 
-Backend
+A simple CRUD application for managing employee information, built with **ASP.NET Core 8**.
 
-    Implemented as a RESTful Web API using ASP.NET Core.
-    All database operations (Create, Read, Update, Delete) are performed using Entity Framework Core.
+## Features
+- **Frontend**: Built with ASP.NET MVC, powered by AJAX for seamless interactions.
+- **Backend**: RESTful Web API using ASP.NET Core.
+- **Database**: SQL Server with Entity Framework Core for data management.
+- **Authentication**: Secure user access with .NET Identity.
 
-Database
+## Tech Stack
+| Component      | Technology             |
+|----------------|-------------------------|
+| Frontend       | ASP.NET MVC            |
+| Backend        | ASP.NET Web API        |
+| Database       | SQL Server             |
+| Authentication | .NET Identity          |
 
-    Powered by SQL Server, with efficient data management and querying.
-
-Authentication & Authorization
-
-    Managed through .NET Identity to ensure secure user access and role-based controls.
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
